@@ -71,7 +71,7 @@ async fn main() {
         update_boat(&mut boat, movement_change);
 
         set_default_camera();
-        draw_ui(boat.movement.speed);
+        draw_ui(&boat);
         next_frame().await
     }
 }
