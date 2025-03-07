@@ -4,8 +4,7 @@ pub mod settings;
 use settings::{ACCEL_CHANGE, DIR_CHANGE};
 
 mod boat;
-use boat::{update_boat, Boat, MovementChange};
-
+use boat::{Boat, MovementChange, update_boat};
 
 mod ui;
 use ui::draw_ui;
@@ -31,7 +30,7 @@ fn build_keymap() -> KeyMap {
 
 #[macroquad::main("Sail")]
 async fn main() {
-    request_new_screen_size(1920.0, 1080.0);
+    // request_new_screen_size(1920.0, 1080.0);
 
     let mut camera =
         Camera2D::from_display_rect(Rect::new(0., 0., screen_width(), screen_height()));
@@ -57,10 +56,10 @@ async fn main() {
                     down: true,
                     up: true,
                     ..
-                } => 0.,
+                } => -boat.movement.speed / 100.,
                 KeyMap { down: true, .. } => -ACCEL_CHANGE,
                 KeyMap { up: true, .. } => ACCEL_CHANGE,
-                _ => 0.,
+                _ => -boat.movement.speed / 100.,
             },
         };
 

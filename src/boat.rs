@@ -1,5 +1,8 @@
-use std::f32::consts::PI;
 use macroquad::prelude::*;
+use std::f32::consts::PI;
+
+const SHIP_HEIGHT: f32 = 25.;
+const SHIP_BASE: f32 = 22.;
 
 pub struct Boat {
     pub position: Vec2,
@@ -53,37 +56,18 @@ fn calculate_boat_physics(boat: &mut Boat, movement_change: MovementChange) {
 }
 
 fn draw_boat(boat: &Boat) {
-    let top_point = &boat.position;
-
-    let angle = Vec2::to_angle(boat.movement.direction) - PI / 2.;
-
-    let boat_texture = Texture2D::from_file_with_format(
-        include_bytes!("../assets/PNG/Default size/Ship parts/hullLarge (1).png"),
-        None,
+    let angle = Vec2::to_angle(boat.movement.direction) + PI / 2.;
+    let v1 = Vec2::new(
+        boat.position.x + angle.sin() * SHIP_HEIGHT / 2.,
+        boat.position.y - angle.cos() * SHIP_HEIGHT / 2.,
     );
-    let sail_texture = Texture2D::from_file_with_format(
-        include_bytes!("../assets/PNG/Default size/Ship parts/sailLarge (7).png"),
-        None,
+    let v2 = Vec2::new(
+        boat.position.x - angle.cos() * SHIP_BASE / 2. - angle.sin() * SHIP_HEIGHT / 2.,
+        boat.position.y - angle.sin() * SHIP_BASE / 2. + angle.cos() * SHIP_HEIGHT / 2.,
     );
-
-    draw_texture_ex(
-        &boat_texture,
-        top_point.x - boat_texture.width() / 2.,
-        top_point.y - boat_texture.height() / 2.,
-        WHITE,
-        DrawTextureParams {
-            rotation: angle,
-            ..Default::default()
-        },
+    let v3 = Vec2::new(
+        boat.position.x + angle.cos() * SHIP_BASE / 2. - angle.sin() * SHIP_HEIGHT / 2.,
+        boat.position.y + angle.sin() * SHIP_BASE / 2. + angle.cos() * SHIP_HEIGHT / 2.,
     );
-    draw_texture_ex(
-        &sail_texture,
-        top_point.x - sail_texture.width() / 2.,
-        top_point.y - sail_texture.height() / 2.,
-        WHITE,
-        DrawTextureParams {
-            rotation: angle,
-            ..Default::default()
-        },
-    );
+    draw_triangle_lines(v1, v2, v3, 2., BLACK);
 }
