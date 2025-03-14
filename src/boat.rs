@@ -90,7 +90,7 @@ fn steering_force(speed: f32) -> f32 {
     if speed == 0. {
         speed
     } else {
-        // With speed as x and MAX_SPEED as y and log(b, x) the base formula is and:
+        // With speed as x and MAX_SPEED as y and log(b, x) the base formula is:
         // f(x) = log(y^1/y, x) which gives us a log curve where if f(MAX_SPEED) = MAX_SPEED.
         // From this, we divide by MAX_SPEED to get a percentage we can apply.
         to_positive(speed).log(MAX_SPEED.powf(1. / MAX_SPEED)) / MAX_SPEED
@@ -109,7 +109,7 @@ fn add_drag(speed: f32, has_direction_change: bool, has_speed_change: bool) -> f
                     (false, true) | (true, false) => 2.,
                     _ => 1.,
                 };
-                // TODO: This curve is too steep. It should not have as much drag on higher speeds.
+                // TODO: This curve should be flatter at higher speeds. It should not have as much drag on higher speeds.
                 let drag = ((100. / to_positive(speed).max(1.)).max(1.)).min(100.) * DRAG / penalty;
                 if speed.is_sign_positive() {
                     (speed - (speed / drag).max(MIN_DRAG_SPEED * get_frame_time())).max(0.)
